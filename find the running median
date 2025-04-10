@@ -1,0 +1,57 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <iomanip>
+using namespace std;
+
+vector<double> runningMedian(const vector<int>& a) {
+    priority_queue<int> left; // max-heap for lower half
+    priority_queue<int, vector<int>, greater<int>> right; // min-heap for upper half
+    vector<double> result;
+
+    for (int num : a) {
+        // Step 1: Insert into one of the heaps
+        if (left.empty() || num <= left.top()) {
+            left.push(num);
+        } else {
+            right.push(num);
+        }
+
+        // Step 2: Balance the heaps
+        if (left.size() > right.size() + 1) {
+            right.push(left.top());
+            left.pop();
+        } else if (right.size() > left.size()) {
+            left.push(right.top());
+            right.pop();
+        }
+
+        // Step 3: Compute median
+        if (left.size() == right.size()) {
+            double median = (left.top() + right.top()) / 2.0;
+            result.push_back(median);
+        } else {
+            result.push_back(left.top());
+        }
+    }
+
+    return result;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> a(n);
+
+    for (int i = 0; i < n; ++i) {
+        cin >> a[i];
+    }
+
+    vector<double> medians = runningMedian(a);
+
+    for (double median : medians) {
+        cout << fixed << setprecision(1) << median << endl;
+    }
+
+    return 0;
+}

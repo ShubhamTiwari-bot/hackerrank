@@ -1,0 +1,41 @@
+#include <iostream>
+#include <vector>
+#include <unordered_map>
+using namespace std;
+
+long long countDivisibleSubsequences(const vector<int>& arr, int k) {
+    unordered_map<int, long long> modCount;
+    long long prefixSum = 0;
+    long long count = 0;
+
+    // Initialize: a prefix sum % k == 0 from the start
+    modCount[0] = 1;
+
+    for (int num : arr) {
+        prefixSum += num;
+        int mod = ((prefixSum % k) + k) % k; // handle negative mods safely
+        count += modCount[mod];
+        modCount[mod]++;
+    }
+
+    return count;
+}
+
+int main() {
+    int T;
+    cin >> T;
+
+    while (T--) {
+        int n, k;
+        cin >> n >> k;
+        vector<int> arr(n);
+
+        for (int i = 0; i < n; ++i) {
+            cin >> arr[i];
+        }
+
+        cout << countDivisibleSubsequences(arr, k) << endl;
+    }
+
+    return 0;
+}
